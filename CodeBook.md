@@ -22,6 +22,8 @@ subject_train <- read.table("UCI HAR Dataset/train/subject_train.txt", col.names
 x_train <- read.table("UCI HAR Dataset/train/X_train.txt", col.names = features$functions)
 y_train <- read.table("UCI HAR Dataset/train/y_train.txt", col.names = "code")
 
+## Need to make sure that each variable is accounted for and under the correct name
+
 ## Step 1: Merges the training and the test sets to create one data set
 X <- rbind(x_train, x_test)
 Y <- rbind(y_train, y_test)
@@ -30,6 +32,7 @@ Merged_Data <- cbind(Subject, Y, X)
 
 ## Step 2: Extracts only the measurements on the mean and standard deviation for each measurement.
 TidyData <- Merged_Data %>% select(subject, code, contains("mean"), contains("std"))
+## Creating the variable TidyData requires Merged_Data to make sure only values of mean and std are accounted for.
 
 ## Step 3: Uses descriptive activity names to name the activities in the data set.
 TidyData$code <- activities[TidyData$code, 2]
@@ -53,6 +56,8 @@ names(TidyData)<-gsub("gravity", "Gravity", names(TidyData))
 FinalData <- TidyData %>%
   group_by(subject, activity) %>%
   summarise_all(funs(mean))
+## FinalData is created by sumarizing TidyData and taking means and summarizing based on grouping in subject and activity.  
+
 write.table(FinalData, "FinalData.txt", row.name=FALSE)
 
 
